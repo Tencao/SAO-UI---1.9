@@ -94,8 +94,7 @@ public class SAOIngameGUI extends GuiIngameForge {
     @Override
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled=true)
     protected void renderCrosshairs(float partialTicks) {
-       if (replaceEvent(CROSSHAIRS)) return;
-        SAOGL.glBlend(true);
+        if (pre(CROSSHAIRS)) return;
         if (SAOOption.CROSS_HAIR.getValue()) super.renderCrosshairs(partialTicks);
         post(CROSSHAIRS);
     }
@@ -103,7 +102,7 @@ public class SAOIngameGUI extends GuiIngameForge {
     @Override
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled=true)
     protected void renderArmor(int width, int height) {
-       if (replaceEvent(ARMOR)) return;
+        if (replaceEvent(ARMOR)) return;
         // Nothing happens here
         post(ARMOR);
     }
@@ -111,14 +110,15 @@ public class SAOIngameGUI extends GuiIngameForge {
     @Override
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled=true)
     protected void renderHotbar(ScaledResolution res, float partialTicks) {
-       if (replaceEvent(HOTBAR)) return;
+        if (replaceEvent(HOTBAR)) return;
         ItemStack itemstack = mc.thePlayer.getHeldItemOffhand();
         EnumHandSide enumhandside = mc.thePlayer.getPrimaryHand().opposite();
         if (mc.playerController.isSpectator()) this.spectatorGui.renderTooltip(res, partialTicks);
         else if (SAOOption.DEFAULT_HOTBAR.getValue()) super.renderHotbar(res, partialTicks);
         else if (SAOOption.ALT_HOTBAR.getValue()) {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            SAOGL.glStart();
+            SAOGL.glBlend(true);
+            SAOGL.tryBlendFuncSeparate(770, 771, 1, 0);
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
             SAOGL.glColor(1, 1, 1, 1);
 
@@ -147,8 +147,8 @@ public class SAOIngameGUI extends GuiIngameForge {
 
             SAOGL.glColor(1, 1, 1, 1);
 
-            GlStateManager.disableBlend();
-            GlStateManager.enableRescaleNormal();
+            SAOGL.glBlend(false);
+            SAOGL.glRescaleNormal(true);
             RenderHelper.enableGUIStandardItemLighting();
 
             for (int i = 0; i < slotCount; i++) {
@@ -170,12 +170,14 @@ public class SAOIngameGUI extends GuiIngameForge {
                     super.renderHotbarItem(w + 91 + 10, res.getScaledHeight() - 17 - 3, partialTicks, mc.thePlayer, itemstack);
                 }
             }
-            GlStateManager.disableRescaleNormal();
+            SAOGL.glRescaleNormal(false);
             RenderHelper.disableStandardItemLighting();
+            SAOGL.glEnd();
 
         } else {
-            GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            SAOGL.glStart();
+            SAOGL.glBlend(true);
+            SAOGL.tryBlendFuncSeparate(770, 771, 1, 0);
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
             SAOGL.glColor(1, 1, 1, 1);
 
@@ -205,8 +207,8 @@ public class SAOIngameGUI extends GuiIngameForge {
 
             SAOGL.glColor(1, 1, 1, 1);
 
-            GlStateManager.disableBlend();
-            GlStateManager.enableRescaleNormal();
+            SAOGL.glBlend(false);
+            SAOGL.glRescaleNormal(true);
             RenderHelper.enableGUIStandardItemLighting();
 
             for (int i = 0; i < slotCount; i++)
@@ -225,8 +227,9 @@ public class SAOIngameGUI extends GuiIngameForge {
                     super.renderHotbarItem(res.getScaledWidth() - 22, y + 2, partialTicks, mc.thePlayer, itemstack);
                 }
             }
-            GlStateManager.disableRescaleNormal();
+            SAOGL.glRescaleNormal(false);
             RenderHelper.disableStandardItemLighting();
+            SAOGL.glEnd();
         }
 
         post(HOTBAR);
@@ -238,7 +241,8 @@ public class SAOIngameGUI extends GuiIngameForge {
        if (replaceEvent(AIR)) return;
         mc.mcProfiler.startSection("air");
         EntityPlayer player = (EntityPlayer)this.mc.getRenderViewEntity();
-        GlStateManager.enableBlend();
+        SAOGL.glStart();
+        SAOGL.glBlend(true);
         int left = width / 2 + 91;
         int top = height - right_height;
 
@@ -255,8 +259,9 @@ public class SAOIngameGUI extends GuiIngameForge {
             right_height += 10;
         }
 
-        GlStateManager.disableBlend();
+        SAOGL.glBlend(false);
         mc.mcProfiler.endSection();
+        SAOGL.glEnd();
         post(AIR);
     }
 
@@ -322,8 +327,10 @@ public class SAOIngameGUI extends GuiIngameForge {
     @Override
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled=true)
     public void renderHealth(int width, int height) {
-       if (replaceEvent(HEALTH)) return;
+        if (replaceEvent(HEALTH)) return;
         mc.mcProfiler.startSection("health");
+
+        SAOGL.glStart();
 
         SAOGL.glAlpha(true);
         SAOGL.glBlend(true);
@@ -506,6 +513,7 @@ public class SAOIngameGUI extends GuiIngameForge {
 
             mc.mcProfiler.endSection();
         }
+        SAOGL.glEnd();
     }
 
     @Override
@@ -515,11 +523,12 @@ public class SAOIngameGUI extends GuiIngameForge {
     }
 
     private void renderFood(int healthWidth, int healthHeight, int offsetUsername, int stepOne, int stepTwo, int stepThree) {
-       if (replaceEvent(FOOD)) return;
+        if (replaceEvent(FOOD)) return;
         mc.mcProfiler.startSection("food");
         final int foodValue = (int) (StaticPlayerHelper.getHungerFract(mc, mc.thePlayer, time) * healthWidth);
         int h = foodValue < 12? 12 - foodValue: 0;
         int o = healthHeight;
+        SAOGL.glStart();
         SAOGL.glColorRGBA(0x8EE1E8);
         for (int i = 0; i < foodValue; i++) {
             SAOGL.glTexturedRect(offsetUsername + i + 4, 9, zLevel, h, 240, 1, o);
@@ -543,6 +552,7 @@ public class SAOIngameGUI extends GuiIngameForge {
             SAOGL.glTexturedRect(offsetUsername + foodValue + 2, 9, zLevel, 0, 249, 4, 4);
             for (int i = 0; i < foodValue - 2; i++) SAOGL.glTexturedRect(offsetUsername + i  + 4, 9, zLevel, 0, 249, 4, 4);
         }
+        SAOGL.glEnd();
 
         mc.mcProfiler.endSection();
         post(FOOD);
@@ -562,6 +572,7 @@ public class SAOIngameGUI extends GuiIngameForge {
         final int levelStrWidth = fontRenderer.getStringWidth(levelStr);
         final int levelBoxes = (levelStrWidth + 4) / 5;
 
+        SAOGL.glStart();
         SAOGL.glAlpha(true);
         SAOGL.glBlend(true);
         SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
@@ -569,6 +580,7 @@ public class SAOIngameGUI extends GuiIngameForge {
         SAOGL.glTexturedRect(offsetHealth + 5, 13 + offsetD, zLevel, levelBoxes * 5, 13, 66, 15, 5, 13);
         SAOGL.glTexturedRect(offsetHealth + (1 + levelBoxes) * 5, 13 + offsetD, zLevel, 5, 13, 78, 15, 3, 13);
         SAOGL.glString(levelStr, offsetHealth + 5, 16 + offsetD, 0xFFFFFFFF, true);
+        SAOGL.glEnd();
 
         mc.mcProfiler.endSection();
         post(EXPERIENCE);

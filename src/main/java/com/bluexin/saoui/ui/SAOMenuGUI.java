@@ -53,6 +53,7 @@ public class SAOMenuGUI extends SAOContainerGUI {
     @Override
 	public void draw(Minecraft mc, int cursorX, int cursorY) {
         if (visibility > 0 && parent != null && height > 0) {
+            SAOGL.glStart();
             if (x > 0) {
                 SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
                 SAOGL.glColorRGBA(SAOColor.DEFAULT_COLOR.multiplyAlpha(visibility));
@@ -76,6 +77,7 @@ public class SAOMenuGUI extends SAOContainerGUI {
                 SAOGL.glTexturedRect(left + width, top, 2, height - 1, 40, 41, 2, 4);
                 SAOGL.glTexturedRect(left + width, arrowTop + (height - 10) / 2, 30, 25 + (fullArrow ? 10 : 0), 10, 10);
             }
+            SAOGL.glEnd();
         }
 
         super.draw(mc, cursorX, cursorY);

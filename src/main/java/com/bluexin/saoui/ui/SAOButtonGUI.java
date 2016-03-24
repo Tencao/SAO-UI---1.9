@@ -46,6 +46,7 @@ public class SAOButtonGUI extends SAOElementGUI {
         super.draw(mc, cursorX, cursorY);
 
         if (visibility > 0) {
+            SAOGL.glStart();
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
 
             final int hoverState = hoverState(cursorX, cursorY);
@@ -77,6 +78,7 @@ public class SAOButtonGUI extends SAOElementGUI {
             final int captionOffset = (height - SAOGL.glStringHeight()) / 2;
 
             SAOGL.glString(caption, left + iconOffset * 2 + 16 + 4, top + captionOffset, SAOColor.multiplyAlpha(color1, visibility));
+            SAOGL.glEnd();
         }
     }
 

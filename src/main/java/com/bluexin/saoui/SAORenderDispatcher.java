@@ -24,6 +24,7 @@ public final class SAORenderDispatcher {
         Profiler profiler = Minecraft.getMinecraft().mcProfiler;
 
         //GL11.glPushAttrib(GL11.GL_LIGHTING);
+        SAOGL.glStart();
         SAOGL.glBlend(true);
         SAOGL.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 
@@ -32,6 +33,7 @@ public final class SAORenderDispatcher {
         profiler.endSection();
         SAOGL.blendFunc(GL11.GL_ONE, GL11.GL_ZERO);
         SAOGL.glBlend(false);
+        SAOGL.glEnd();
         //GL11.glPopAttrib();
     }
 }

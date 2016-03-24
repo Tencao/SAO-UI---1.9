@@ -102,6 +102,7 @@ public abstract class SAOScreenGUI extends GuiScreen implements SAOParentGUI {
         super.drawScreen(cursorX, cursorY, f);
 
         SAOGL.glStartUI(mc);
+        SAOGL.glStart();
 
         SAOGL.glBlend(true);
         SAOGL.tryBlendFuncSeparate(770, 771, 1, 0);
@@ -110,9 +111,6 @@ public abstract class SAOScreenGUI extends GuiScreen implements SAOParentGUI {
 
         if (CURSOR_STATUS == SAOCursorStatus.SHOW) {
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
-
-            SAOGL.glBlend(true);
-            SAOGL.tryBlendFuncSeparate(770, 771, 1, 0);
 
             if (mouseDown != 0) {
                 final float fval = f * 0.1F;
@@ -132,7 +130,8 @@ public abstract class SAOScreenGUI extends GuiScreen implements SAOParentGUI {
 
             SAOGL.glTexturedRect(cursorX - 7, cursorY - 7, 20, 115, 15, 15);
         }
-
+        SAOGL.glBlend(false);
+        SAOGL.glEnd();
         SAOGL.glEndUI(mc);
     }
 

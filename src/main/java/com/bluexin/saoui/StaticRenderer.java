@@ -66,14 +66,13 @@ class StaticRenderer{
                 float f = 1.6F;
                 float f1 = 0.016666668F * f;
 
-                Tessellator tessellator = Tessellator.getInstance();
+                SAOGL.glStart();
+                SAOGL.glTranslatef((float) x + 0.0F, (float) y + sizeMult * living.height + sizeMult * 1.1F, (float) z);
 
-                GL11.glPushMatrix();
-                GL11.glTranslatef((float) x + 0.0F, (float) y + sizeMult * living.height + sizeMult * 1.1F, (float) z);
-                GL11.glNormal3f(0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
-                GL11.glScalef(-(f1 * sizeMult), -(f1 * sizeMult), (f1 * sizeMult));
-                GL11.glDisable(GL11.GL_LIGHTING);
+                SAOGL.glNormal3f(0.0F, 1.0F, 0.0F);
+                SAOGL.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
+                SAOGL.glScalef(-(f1 * sizeMult), -(f1 * sizeMult), (f1 * sizeMult));
+                SAOGL.lighting(false);
 
                 SAOGL.glDepthTest(true);
 
@@ -83,7 +82,7 @@ class StaticRenderer{
 
                 SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.entities : SAOResources.entitiesCustom);
                 SAOEventHandler.getColor(living);
-                tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                SAOGL.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
                 //System.out.print(state.name() + " assigned to " + living.getCommandSenderName() + " " + living.getUniqueID() + "\n");
 
@@ -93,43 +92,43 @@ class StaticRenderer{
                     double sin = Math.sin(a);//Math.PI / 3 * 2);
 
                     if (a > Math.PI / 2 && a <= Math.PI * 3 / 2 ) {
-                        tessellator.getBuffer().pos(9.0D * cos, -1, 9.0D * sin).tex(0.125F, 0.25F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * cos, 17, 9.0D * sin).tex(0.125F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * cos, 17, -9.0D * sin).tex(0F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * cos, -1, -9.0D * sin).tex(0F, 0.25F).endVertex();
+                        SAOGL.addVertex(9.0D * cos, -1, 9.0D * sin, 0.125F, 0.25F);
+                        SAOGL.addVertex(9.0D * cos, 17, 9.0D * sin, 0.125F, 0.375F);
+                        SAOGL.addVertex(-9.0D * cos, 17, -9.0D * sin, 0F, 0.375F);
+                        SAOGL.addVertex(-9.0D * cos, -1, -9.0D * sin, 0F, 0.25F);
                     } else {
-                        tessellator.getBuffer().pos(-9.0D * cos, -1, -9.0D * sin).tex(0F, 0.25F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * cos, 17, -9.0D * sin).tex(0F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * cos, 17, 9.0D * sin).tex(0.125F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * cos, -1, 9.0D * sin).tex(0.125F, 0.25F).endVertex();
+                        SAOGL.addVertex(-9.0D * cos, -1, -9.0D * sin, 0F, 0.25F);
+                        SAOGL.addVertex(-9.0D * cos, 17, -9.0D * sin, 0F, 0.375F);
+                        SAOGL.addVertex(9.0D * cos, 17, 9.0D * sin, 0.125F, 0.375F);
+                        SAOGL.addVertex(9.0D * cos, -1, 9.0D * sin, 0.125F, 0.25F);
                     }
 
-                    tessellator.draw();
-                    tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                    SAOGL.draw();
+                    SAOGL.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
                     if (a < Math.PI) {
-                        tessellator.getBuffer().pos(-9.0D * sin, -1, 9.0D * cos).tex(0.125F, 0.25F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * sin, 17, 9.0D * cos).tex(0.125F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * sin, 17, -9.0D * cos).tex(0F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * sin, -1, -9.0D * cos).tex(0F, 0.25F).endVertex();
+                        SAOGL.addVertex(-9.0D * sin, -1, 9.0D * cos, 0.125F, 0.25F);
+                        SAOGL.addVertex(-9.0D * sin, 17, 9.0D * cos, 0.125F, 0.375F);
+                        SAOGL.addVertex(9.0D * sin, 17, -9.0D * cos, 0F, 0.375F);
+                        SAOGL.addVertex(9.0D * sin, -1, -9.0D * cos, 0F, 0.25F);
                     } else {
-                        tessellator.getBuffer().pos(9.0D * sin, -1, -9.0D * cos).tex(0F, 0.25F).endVertex();
-                        tessellator.getBuffer().pos(9.0D * sin, 17, -9.0D * cos).tex(0F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * sin, 17, 9.0D * cos).tex(0.125F, 0.375F).endVertex();
-                        tessellator.getBuffer().pos(-9.0D * sin, -1, 9.0D * cos).tex(0.125F, 0.25F).endVertex();
+                        SAOGL.addVertex(9.0D * sin, -1, -9.0D * cos, 0F, 0.25F);
+                        SAOGL.addVertex(9.0D * sin, 17, -9.0D * cos, 0F, 0.375F);
+                        SAOGL.addVertex(-9.0D * sin, 17, 9.0D * cos, 0.125F, 0.375F);
+                        SAOGL.addVertex(-9.0D * sin, -1, 9.0D * cos, 0.125F, 0.25F);
                     }
 
-                    tessellator.draw();
+                    SAOGL.draw();
                 } else {
-                    tessellator.getBuffer().pos(-9, -1, 0.0D).tex(0F, 0.25F).endVertex();
-                    tessellator.getBuffer().pos(-9, 17, 0.0D).tex(0F, 0.375F).endVertex();
-                    tessellator.getBuffer().pos(9, 17, 0.0D).tex(0.125F, 0.375F).endVertex();
-                    tessellator.getBuffer().pos(9, -1, 0.0D).tex(0.125F, 0.25F).endVertex();
-                    tessellator.draw();
+                    SAOGL.addVertex(-9, -1, 0.0D, 0F, 0.25F);
+                    SAOGL.addVertex(-9, 17, 0.0D, 0F, 0.375F);
+                    SAOGL.addVertex( 9, 17, 0.0D, 0.125F, 0.375F);
+                    SAOGL.addVertex(9, -1, 0.0D, 0.125F, 0.25F);
+                    SAOGL.draw();
                 }
 
-                GL11.glEnable(GL11.GL_LIGHTING);
-                GL11.glPopMatrix();
+                SAOGL.lighting(true);
+                SAOGL.glEnd();
             }
         }
     }
@@ -138,9 +137,10 @@ class StaticRenderer{
         if (living.getRidingEntity() != null && living.getRidingEntity() == mc.thePlayer) return;
         if (SAOOption.LESS_VISUALS.getValue() && !(living instanceof IMob || StaticPlayerHelper.getHealth(mc, living, SAOMod.UNKNOWN_TIME_DELAY) != StaticPlayerHelper.getMaxHealth(living)))
             return;
+
+        SAOGL.glStart();
         SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.entities : SAOResources.entitiesCustom);
 
-        Tessellator tessellator = Tessellator.getInstance();
         SAOGL.glDepthTest(true);
         SAOGL.glCullFace(false);
         SAOGL.glBlend(true);
@@ -150,7 +150,7 @@ class StaticRenderer{
         final int hitPoints = (int) (getHealthFactor(mc, living, SAOMod.UNKNOWN_TIME_DELAY) * HEALTH_COUNT);
         useColor(mc, living, SAOMod.UNKNOWN_TIME_DELAY);
 
-        tessellator.getBuffer().begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX);
+        SAOGL.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX);
 
         final float sizeMult = living.isChild() && living instanceof EntityMob? 0.5F: 1.0F;
 
@@ -164,14 +164,14 @@ class StaticRenderer{
 
             final double uv_value = value - (double) (HEALTH_COUNT - hitPoints) / HEALTH_COUNT;
 
-            tessellator.getBuffer().pos(x0, y0 + HEALTH_HEIGHT, z0).tex((1.0 - uv_value), 0).endVertex();
-            tessellator.getBuffer().pos(x0, y0, z0).tex((1.0 - uv_value), 0.125).endVertex();
+            SAOGL.addVertex(x0, y0 + HEALTH_HEIGHT, z0, (1.0 - uv_value), 0);
+            SAOGL.addVertex(x0, y0, z0, (1.0 - uv_value), 0.125);
         }
 
-        tessellator.draw();
+        SAOGL.draw();
 
         SAOGL.glColor(1, 1, 1, 1);
-        tessellator.getBuffer().begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX);
+        SAOGL.begin(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_TEX);
 
         for (int i = 0; i <= HEALTH_COUNT; i++) {
             final double value = (double) i / HEALTH_COUNT;
@@ -181,13 +181,14 @@ class StaticRenderer{
             final double y0 = y + sizeMult * living.height * HEALTH_OFFSET;
             final double z0 = z + sizeMult * living.width * HEALTH_RANGE * Math.sin(rad);
 
-            tessellator.getBuffer().pos(x0, y0 + HEALTH_HEIGHT, z0).tex((1.0 - value), 0.125).endVertex();
-            tessellator.getBuffer().pos(x0, y0, z0).tex((1.0 - value), 0.25).endVertex();
+            SAOGL.addVertex(x0, y0 + HEALTH_HEIGHT, z0, (1.0 - value), 0.125);
+            SAOGL.addVertex(x0, y0, z0, (1.0 - value), 0.25);
         }
 
-        tessellator.draw();
+        SAOGL.draw();
 
         SAOGL.glCullFace(true);
+        SAOGL.glEnd();
     }
 
     public static void doSpawnDeathParticles(Minecraft mc, Entity living) {

@@ -4,9 +4,12 @@ import com.bluexin.saoui.SAOMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.ResourceLocation;
@@ -141,6 +144,22 @@ public final class SAOGL {
         glTexturedRect(x, y, 0, srcX, srcY, width, height);
     }
 
+    public static void addVertex(double x, double y, double z, double srcX, double srcY){
+        Tessellator.getInstance().getBuffer().pos(x, y, z).tex(srcX, srcY).endVertex();
+    }
+
+    public static void addVertex(double x, double y, double z, double srcX, double srcY, float red, float green, float blue, float alpha){
+        Tessellator.getInstance().getBuffer().pos(x, y, z).tex(srcX, srcY).color(red, green, blue, alpha).endVertex();
+    }
+
+    public static void begin(int glMode, VertexFormat format){
+        Tessellator.getInstance().getBuffer().begin(glMode, format);
+    }
+
+    public static void draw(){
+        Tessellator.getInstance().draw();
+    }
+
     public static void glRect(int x, int y, int width, int height) {
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -152,12 +171,17 @@ public final class SAOGL {
     }
 
     public static void glAlpha(boolean flag) {
+        if (flag) GL11.glEnable(GL11.GL_ALPHA);
+        else GL11.glDisable(GL11.GL_ALPHA);
+    }
+
+    public static void glAlphaTest(boolean flag) {
         if (flag) GlStateManager.enableAlpha();
         else GlStateManager.disableAlpha();
     }
 
     public static void alphaFunc(int src, int dst) {
-        GlStateManager.alphaFunc(src, dst);
+        GL11.glAlphaFunc(src, dst);
     }
 
     public static void glBlend(boolean flag) {
@@ -183,7 +207,7 @@ public final class SAOGL {
     }
 
     public static void glDepthFunc(int flag) {
-        GlStateManager.depthFunc(flag);
+        GL11.glDepthFunc(flag);
     }
 
     public static void glRescaleNormal(boolean flag) {
@@ -201,6 +225,27 @@ public final class SAOGL {
         else GlStateManager.disableCull();
     }
 
+    public static void glTranslatef(float x, float y, float z) {
+        GlStateManager.translate(x, y, z);
+    }
+
+    public static void glNormal3f(float x, float y, float z) {
+        GlStateManager.glNormal3f(x, y, z);
+    }
+
+    public static void glRotatef(float angle, float x, float y, float z) {
+        GlStateManager.rotate(angle, x, y, z);
+    }
+
+    public static void glScalef(float x, float y, float z) {
+        GlStateManager.scale(x, y, z);
+    }
+
+    public static void lighting(boolean flag) {
+        if (flag) GlStateManager.enableLighting();
+        else  GlStateManager.disableLighting();
+    }
+
     public static void glStartUI(Minecraft mc) {
         mc.mcProfiler.startSection(SAOMod.MODID + "[ '" + SAOMod.NAME + "' ]");
     }
@@ -209,6 +254,14 @@ public final class SAOGL {
         mc.mcProfiler.endSection();
     }
 
+
+    public static void glStart() {
+        GlStateManager.pushMatrix();
+    }
+
+    public static void glEnd() {
+        GlStateManager.popMatrix();
+    }
 
     /**
      * returns an AABB with corners x1, y1, z1 and x2, y2, z2

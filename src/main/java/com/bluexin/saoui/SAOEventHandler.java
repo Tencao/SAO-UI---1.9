@@ -126,6 +126,11 @@ public class SAOEventHandler {
     }
 
     @SubscribeEvent
+    public void nameNotification(ClientChatReceivedEvent e){
+        if (e.message.getUnformattedTextForChat().contains(mc.thePlayer.getDisplayNameString())) SAOSound.play(mc, SAOSound.MESSAGE);
+    }
+
+    @SubscribeEvent
     public void genStateMaps(EntityEvent.EntityConstructing e){
         if (e.entity instanceof EntityLivingBase)
             if (ColorStateHandler.getInstance().getDefault((EntityLivingBase)e.entity) == null && !(e.entity instanceof EntityPlayer))

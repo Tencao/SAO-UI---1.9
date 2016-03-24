@@ -46,13 +46,13 @@ public class SAODeathGUI extends SAOScreenGUI {
     public void drawScreen(int cursorX, int cursorY, float f) {
         drawDefaultBackground();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(-width / 2, -height / 2, 0.0F);
-        GlStateManager.scale(2.0F, 2.0F, 2.0F);
+        SAOGL.glStart();
+        SAOGL.glTranslatef(-width / 2, -height / 2, 0.0F);
+        SAOGL.glScalef(2.0F, 2.0F, 2.0F);
 
         super.drawScreen(cursorX, cursorY, f);
 
-        GlStateManager.popMatrix();
+        SAOGL.glEnd();
     }
 
     @Override

@@ -60,6 +60,7 @@ public class SAOSlotGUI extends SAOButtonGUI {
 
     @Override
     public void draw(Minecraft mc, int cursorX, int cursorY) {
+        SAOGL.glStart();
         super.draw(mc, cursorX, cursorY);
 
         if ((visibility > 0) && (enabled)) {
@@ -74,6 +75,7 @@ public class SAOSlotGUI extends SAOButtonGUI {
                 this.drawSlot(mc, stack, left + iconOffset, top + iconOffset);
             }
         }
+        SAOGL.glEnd();
     }
 
     private void drawSlot(Minecraft mc, ItemStack stack, int x, int y) {
@@ -82,22 +84,22 @@ public class SAOSlotGUI extends SAOButtonGUI {
         itemRender.renderItemIntoGUI(stack, x, y);
         RenderHelper.disableStandardItemLighting();
 
-        if (stack.isItemEnchanted()) renderEffectSlot(mc.getTextureManager(), x-  1, y - 1);
+        if (stack.isItemEnchanted()) renderEffectSlot(mc, x-  1, y - 1);
         else {
             SAOGL.glBlend(true);
             SAOGL.glAlpha(true);
         }
     }
 
-    private void renderEffectSlot(TextureManager manager, int x, int y){
+    private void renderEffectSlot(Minecraft mc, int x, int y){
         SAOGL.glDepthFunc(GL11.GL_EQUAL);
         SAOGL.depthMask(false);
-        manager.bindTexture(RES_ITEM_GLINT);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glColor4f(0.5F, 0.25F, 0.8F, 1.0F);
+        mc.getTextureManager().bindTexture(RES_ITEM_GLINT);
+        SAOGL.glAlphaTest(true);
+        SAOGL.glBlend(true);
+        SAOGL.glColor(0.5F, 0.25F, 0.8F, 1.0F);
         this.renderGlintSlot(x, y, 150, 20);
-        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        SAOGL.tryBlendFuncSeparate(770, 771, 1, 0);
         SAOGL.depthMask(true);
         SAOGL.glDepthFunc(GL11.GL_LEQUAL);
     }
@@ -105,12 +107,11 @@ public class SAOSlotGUI extends SAOButtonGUI {
     private void renderGlintSlot(int x, int y, int width, int height){
         for (int j1 = 0; j1 < 2; ++j1)
         {
-            OpenGlHelper.glBlendFunc(772, 1, 0, 0);
+            SAOGL.tryBlendFuncSeparate(772, 1, 0, 0);
             float f = 0.00390625F;
             float f1 = 0.00390625F;
             float f2 = (float)(Minecraft.getSystemTime() % (long)(3000 + j1 * 1873)) / (3000.0F + (float)(j1 * 1873)) * 256.0F;
             float f3 = 0.0F;
-            Tessellator tessellator = Tessellator.getInstance();
             float f4 = 4.0F;
 
             if (j1 == 1)
@@ -118,12 +119,12 @@ public class SAOSlotGUI extends SAOButtonGUI {
                 f4 = -1.0F;
             }
 
-            tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            tessellator.getBuffer().pos((double)(x), (double)(y + height), (double)itemRender.zLevel).tex((double)((f2 + (float)height * f4) * f), (double)((f3 + (float)height) * f1)).endVertex();
-            tessellator.getBuffer().pos((double)(x + width), (double)(y + height), (double)itemRender.zLevel).tex((double)((f2 + (float)width + (float)height * f4) * f), (double)((f3 + (float)height) * f1)).endVertex();
-            tessellator.getBuffer().pos((double)(x + width), (double)(y), (double)itemRender.zLevel).tex((double)((f2 + (float)width) * f), (double)((f3 + 0.0F) * f1)).endVertex();
-            tessellator.getBuffer().pos((double)(x), (double)(y), (double)itemRender.zLevel).tex((double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1)).endVertex();
-            tessellator.draw();
+            SAOGL.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            SAOGL.addVertex((double)(x), (double)(y + height), (double)itemRender.zLevel, (double)((f2 + (float)height * f4) * f), (double)((f3 + (float)height) * f1));
+            SAOGL.addVertex((double)(x + width), (double)(y + height), (double)itemRender.zLevel, (double)((f2 + (float)width + (float)height * f4) * f), (double)((f3 + (float)height) * f1));
+            SAOGL.addVertex((double)(x + width), (double)(y), (double)itemRender.zLevel, (double)((f2 + (float)width) * f), (double)((f3 + 0.0F) * f1));
+            SAOGL.addVertex((double)(x), (double)(y), (double)itemRender.zLevel, (double)((f2 + 0.0F) * f), (double)((f3 + 0.0F) * f1));
+            SAOGL.draw();
         }
     }
 

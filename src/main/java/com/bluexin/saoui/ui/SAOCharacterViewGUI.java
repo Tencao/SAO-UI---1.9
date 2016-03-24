@@ -50,6 +50,7 @@ public class SAOCharacterViewGUI extends SAOElementGUI {
         clickIndex = -1;
 
         if (visibility > 0) {
+            SAOGL.glStart();
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
             SAOGL.glColorRGBA(SAOColor.DEFAULT_COLOR.multiplyAlpha(visibility));
 
@@ -93,6 +94,7 @@ public class SAOCharacterViewGUI extends SAOElementGUI {
                     if (hovered) clickIndex = index;
                 }
             }
+            SAOGL.glEnd();
         }
     }
 

@@ -38,6 +38,7 @@ public class SAOWindowGUI extends SAOMenuGUI {
     @Override
     public void draw(Minecraft mc, int cursorX, int cursorY) {
         if (visibility > 0) {
+            SAOGL.glStart();
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
             SAOGL.glColorRGBA(SAOColor.DEFAULT_COLOR.multiplyAlpha(visibility));
 
@@ -69,6 +70,7 @@ public class SAOWindowGUI extends SAOMenuGUI {
 
             SAOGL.glTexturedRect(left, top + size + topBox, width2, bottomBox, 0, 65, width2, 20);
             SAOGL.glTexturedRect(left + width2, top + size + topBox, width2, bottomBox, 200 - width2, 65, width2, 20);
+            SAOGL.glEnd();
         }
 
         super.draw(mc, cursorX, cursorY);

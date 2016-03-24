@@ -30,6 +30,7 @@ public class SAOAlertGUI extends SAOElementGUI {
         super.draw(mc, cursorX, cursorY);
 
         if (visibility > 0) {
+            SAOGL.glStart();
             SAOGL.glBindTexture(SAOOption.ORIGINAL_UI.getValue() ? SAOResources.gui : SAOResources.guiCustom);
 
             final int color = mouseOver(cursorX, cursorY) ? alertColor.mediumColor(SAOColor.DEFAULT_FONT_COLOR) : alertColor.rgba;
@@ -49,6 +50,7 @@ public class SAOAlertGUI extends SAOElementGUI {
             //GlStateManager.scale(0.5F, 0.5F, 0.5F);
             //SAOGL.glString(caption, (int) (left + (width - SAOGL.glStringWidth(caption) / 4) / 16) * 2, (int) (top + (height - SAOGL.glStringHeight()) / 1.5F) * 2, alertColor);
             //GlStateManager.scale(1.0F, 1.0F, 1.0F); // There might be a better way of doing this. Whatever.
+            SAOGL.glEnd();
         }
     }
 

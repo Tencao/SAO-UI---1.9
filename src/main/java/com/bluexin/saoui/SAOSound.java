@@ -8,16 +8,17 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 
 public class SAOSound {
 
-    public static final String CONFIRM = "confirm";
-    public static final String DIALOG_CLOSE = "dialog_close";
-    public static final String MENU_POPUP = "menu_popup";
-    public static final String MESSAGE = "message";
-    public static final String ORB_DROPDOWN = "orb_dropdown";
-    public static final String PARTICLES_DEATH = "particles_death";
-    public static final String LOW_HEALTH = "low_health";
+    public static final String CONFIRM = "sao.confirm";
+    public static final String DIALOG_CLOSE = "sao.dialog.close";
+    public static final String MENU_POPUP = "sao.menu.popup";
+    public static final String MESSAGE = "sao.message";
+    public static final String ORB_DROPDOWN = "sao.orb.dropdown";
+    public static final String PARTICLES_DEATH = "sao.particles.death";
+    public static final String LOW_HEALTH = "sao.low.health";
     
     private static ResourceLocation getResource(String name) {
         return new ResourceLocation(SAOMod.MODID, name);
@@ -28,6 +29,7 @@ public class SAOSound {
             playAtEntity(entity, name);
         }
     }
+
 
     public static void playAtEntity(Entity entity, String name) {
         final Minecraft mc = Minecraft.getMinecraft();
