@@ -1,7 +1,7 @@
 package com.bluexin.saoui.commands;
 
-import com.bluexin.saoui.util.FriendsHandler;
-import com.bluexin.saoui.util.PartyHelper;
+import com.bluexin.saoui.events.FriendsHandler;
+import com.bluexin.saoui.social.party.PartyHelper;
 import com.bluexin.saoui.util.TriConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
