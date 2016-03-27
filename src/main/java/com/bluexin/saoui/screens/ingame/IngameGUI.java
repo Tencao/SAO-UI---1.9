@@ -11,16 +11,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiOverlayDebug;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -99,7 +104,12 @@ public class IngameGUI extends GuiIngameForge {
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled=true)
     protected void renderCrosshairs(float partialTicks) {
         if (pre(CROSSHAIRS)) return;
-        if (OptionCore.CROSS_HAIR.getValue()) super.renderCrosshairs(partialTicks);
+        GLCore.glStart();
+        if (OptionCore.CROSS_HAIR.getValue())
+            super.renderCrosshairs(partialTicks);
+        GLCore.tryBlendFuncSeparate(770, 771, 1, 0);
+
+        GLCore.glEnd();
         post(CROSSHAIRS);
     }
 
@@ -667,7 +677,7 @@ public class IngameGUI extends GuiIngameForge {
     }
 
     private boolean replaceEvent(ElementType el) {
-        if (eventParent.type == el && eventParent.isCanceled()) {
+        if (eventParent.getType() == el && eventParent.isCanceled()) {
             eventParent.setCanceled(false);
             eventParent.setResult(Event.Result.ALLOW);
             pre(el);
@@ -683,6 +693,11 @@ public class IngameGUI extends GuiIngameForge {
 
     private void post(ElementType type) {
         MinecraftForge.EVENT_BUS.post(new RenderGameOverlayEvent.Post(eventParent, type));
+    }
+
+    private void bind(ResourceLocation res)
+    {
+        mc.getTextureManager().bindTexture(res);
     }
 
     private class GuiOverlayDebugForge extends GuiOverlayDebug {

@@ -105,17 +105,17 @@ public class RenderHandler {
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post e) {
-        if (e.entityPlayer != null) {
-            ColorStateHandler.getInstance().genPlayerStates(e.entityPlayer);
-            StaticRenderer.render(e.renderer.getRenderManager(), e.entityPlayer, e.entityPlayer.posX, e.entityPlayer.posY, e.entityPlayer.posZ);
+        if (e.getEntityPlayer() != null) {
+            ColorStateHandler.getInstance().genPlayerStates(e.getEntityPlayer());
+            StaticRenderer.render(e.getRenderer().getRenderManager(), e.getEntityPlayer(), e.getEntityPlayer().posX, e.getEntityPlayer().posY, e.getEntityPlayer().posZ);
         }
     }
 
     @SubscribeEvent
     public void renderEntity(RenderLivingEvent.Post e) {
-        if (e.entity != mc.thePlayer) {
-            ColorStateHandler.getInstance().genColorStates(e.entity);
-            StaticRenderer.render(e.renderer.getRenderManager(), e.entity, e.x, e.y, e.z);
+        if (e.getEntity() != mc.thePlayer) {
+            ColorStateHandler.getInstance().genColorStates(e.getEntity());
+            StaticRenderer.render(e.getRenderer().getRenderManager(), e.getEntity(), e.getX(), e.getY(), e.getZ());
         }
     }
 

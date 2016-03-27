@@ -3,7 +3,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "confirm"
+        "name": "saoui:confirm"
       }
     ]
   },
@@ -11,7 +11,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "dialog_close"
+        "name": "saoui:dialog_close"
       }
     ]
   },
@@ -19,7 +19,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "menu_popup"
+        "name": "saoui:menu_popup"
       }
     ]
   },
@@ -27,7 +27,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "message"
+        "name": "saoui:message"
       }
     ]
   },
@@ -35,7 +35,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "orb_dropdown"
+        "name": "saoui:orb_dropdown"
       }
     ]
   },
@@ -43,7 +43,7 @@
     "category": "master",
     "sounds": [
       {
-        "name": "particles_death"
+        "name": "saoui:particles_death"
       }
     ]
   }

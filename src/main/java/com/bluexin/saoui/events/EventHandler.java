@@ -64,49 +64,49 @@ public class EventHandler {
 
     @SubscribeEvent
     public void checkAggro(LivingSetAttackTargetEvent e) {
-        if (OptionCore.AGGRO_SYSTEM.getValue() && ColorStateHandler.getInstance().getSavedState(e.entityLiving) != ColorState.KILLER  && e.getPhase().equals(TickEvent.Phase.END))
-            if (e.target instanceof EntityPlayer) {
-                stateChanger(e.entityLiving, false, true);
-                System.out.print(e.entityLiving.getName() + " sent to State Changer from checkAggro" + "\n");
+        if (OptionCore.AGGRO_SYSTEM.getValue() && ColorStateHandler.getInstance().getSavedState(e.getEntityLiving()) != ColorState.KILLER  && e.getPhase().equals(TickEvent.Phase.END))
+            if (e.getTarget() instanceof EntityPlayer) {
+                stateChanger(e.getEntityLiving(), false, true);
+                if (OptionCore.DEBUG_MODE.getValue()) System.out.print(e.getEntityLiving().getName() + " sent to State Changer from checkAggro" + "\n");
             }
     }
 
     @SubscribeEvent
     public void checkAttack(LivingAttackEvent e) {
         if (OptionCore.AGGRO_SYSTEM.getValue() && e.getPhase().equals(TickEvent.Phase.END))
-            if (e.source.getEntity() instanceof IAnimals)
-                if (e.entityLiving instanceof EntityPlayer) {
-                    if (e.entityLiving.getHealth() <= 0)
-                        stateChanger((EntityLivingBase) e.source.getEntity(), true, false);
-                    else stateChanger((EntityLivingBase) e.source.getEntity(), false, false);
+            if (e.getSource().getEntity() instanceof IAnimals)
+                if (e.getEntityLiving() instanceof EntityPlayer) {
+                    if (e.getEntityLiving().getHealth() <= 0)
+                        stateChanger((EntityLivingBase) e.getSource().getEntity(), true, false);
+                    else stateChanger((EntityLivingBase) e.getSource().getEntity(), false, false);
                     if (OptionCore.DEBUG_MODE.getValue())
-                        System.out.print(e.source.getEntity().getName() + " sent to State Changer from checkAttack" + "\n");
+                        System.out.print(e.getSource().getEntity().getName() + " sent to State Changer from checkAttack" + "\n");
                 }
     }
 
     @SubscribeEvent
     public void checkPlayerAttack(AttackEntityEvent e) {
         if (OptionCore.AGGRO_SYSTEM.getValue() && e.getPhase().equals(TickEvent.Phase.END))
-            if (e.target instanceof EntityPlayer && e.target.getUniqueID() != e.entityPlayer.getUniqueID()) {
-                if (((EntityPlayer) e.target).getHealth() <= 0) stateChanger(e.entityPlayer, true, false);
-                else stateChanger(e.entityPlayer, false, false);
+            if (e.getTarget() instanceof EntityPlayer && e.getTarget().getUniqueID() != e.getEntityPlayer().getUniqueID()) {
+                if (((EntityPlayer) e.getTarget()).getHealth() <= 0) stateChanger(e.getEntityPlayer(), true, false);
+                else stateChanger(e.getEntityPlayer(), false, false);
                 if (OptionCore.DEBUG_MODE.getValue())
-                    System.out.print(e.entityPlayer.getName() + " sent to State Changer from checkPlayerAttack" + "\n");
+                    System.out.print(e.getEntityPlayer().getName() + " sent to State Changer from checkPlayerAttack" + "\n");
             }
     }
 
     @SubscribeEvent
     public void checkKill(LivingDeathEvent e){
         if (OptionCore.AGGRO_SYSTEM.getValue() && e.getPhase().equals(TickEvent.Phase.END)) {
-            if (e.source.getEntity() instanceof EntityLivingBase)
-                if (e.entityLiving instanceof EntityPlayer) {
-                    stateChanger((EntityLivingBase) e.source.getEntity(), true, false);
+            if (e.getSource().getEntity() instanceof EntityLivingBase)
+                if (e.getEntityLiving() instanceof EntityPlayer) {
+                    stateChanger((EntityLivingBase) e.getSource().getEntity(), true, false);
                     if (OptionCore.DEBUG_MODE.getValue())
-                        System.out.print(e.source.getEntity().getName() + " sent to State Changer from checkKill" + "\n");
+                        System.out.print(e.getSource().getEntity().getName() + " sent to State Changer from checkKill" + "\n");
                 }
-            if (!(e.entityLiving instanceof EntityPlayer)) ColorStateHandler.getInstance().remove(e.entityLiving);
+            if (!(e.getEntityLiving() instanceof EntityPlayer)) ColorStateHandler.getInstance().remove(e.getEntityLiving());
         }
-        if (OptionCore.PARTICLES.getValue() && e.entity.worldObj.isRemote) RenderHandler.deadHandlers.add(e.entityLiving);
+        if (OptionCore.PARTICLES.getValue() && e.getEntity().worldObj.isRemote) RenderHandler.deadHandlers.add(e.getEntityLiving());
     }
 
     @SubscribeEvent
@@ -124,19 +124,19 @@ public class EventHandler {
 
     @SubscribeEvent
     public void disableAggroOnServer(FMLNetworkEvent.ClientConnectedToServerEvent e){
-        if (!e.isLocal && OptionCore.AGGRO_SYSTEM.getValue()) OptionCore.AGGRO_SYSTEM.flip();
+        if (!e.isLocal() && OptionCore.AGGRO_SYSTEM.getValue()) OptionCore.AGGRO_SYSTEM.flip();
     }
 
     @SubscribeEvent
     public void nameNotification(ClientChatReceivedEvent e){
-        if (e.message.getUnformattedTextForChat().contains(mc.thePlayer.getDisplayNameString())) SoundCore.play(mc, SoundCore.MESSAGE);
+        if (e.getMessage().getUnformattedTextForChat().contains(mc.thePlayer.getDisplayNameString())) SoundCore.play(mc, SoundCore.MESSAGE);
     }
 
     @SubscribeEvent
     public void genStateMaps(EntityEvent.EntityConstructing e){
-        if (e.entity instanceof EntityLivingBase)
-            if (ColorStateHandler.getInstance().getDefault((EntityLivingBase)e.entity) == null && !(e.entity instanceof EntityPlayer))
-                ColorStateHandler.getInstance().genDefaultState((EntityLivingBase)e.entity);
+        if (e.getEntity() instanceof EntityLivingBase)
+            if (ColorStateHandler.getInstance().getDefault((EntityLivingBase)e.getEntity()) == null && !(e.getEntity() instanceof EntityPlayer))
+                ColorStateHandler.getInstance().genDefaultState((EntityLivingBase)e.getEntity());
     }
 
     @SubscribeEvent
@@ -152,7 +152,7 @@ public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void chatEvent(ClientChatReceivedEvent evt) {
-        if (Command.processCommand(evt.message.getUnformattedText())) evt.setCanceled(true);// TODO: add pm feature and PT chat
+        if (Command.processCommand(evt.getMessage().getUnformattedText())) evt.setCanceled(true);// TODO: add pm feature and PT chat
     }
 
 }
